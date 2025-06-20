@@ -1,5 +1,11 @@
-function Login() {
-  return <h2>AdminDashboard Page</h2>;
-}
+import Navbar from '../components/Navbar';
 
-export default Login;
+export default function AdminDashboard() {
+  return (
+    <div>
+      <Navbar />
+
+      <h2>Admin Dashboard</h2>
+    </div>
+  );
+}
