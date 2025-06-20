@@ -1,14 +1,16 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import UserDashboard from './pages/UserDashboard';
-import QuizPage from './pages/QuizPage';
-import QuizResult from './pages/QuizResult';
-import QuizLog from './pages/QuizLog';
-import AdminDashboard from './pages/AdminDashboard';
-import ManageQuestions from './pages/ManageQuestions';
-import ManageUsers from './pages/ManageUsers';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import UserDashboard from "./pages/UserDashboard";
+import QuizPage from "./pages/QuizPage";
+import QuizSession from "./pages/QuizSession";
+import QuizResult from "./pages/QuizResult";
+import QuizLog from "./pages/QuizLog";
+import AdminDashboard from "./pages/AdminDashboard";
+import ManageQuestions from "./pages/ManageQuestions";
+import ManageUsers from "./pages/ManageUsers";
+import PrivateRoute from "./auth/PrivateRoute";
 
 function App() {
   return (
@@ -17,13 +19,63 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/user" element={<UserDashboard />} />
-        <Route path="/quiz" element={<QuizPage />} />
-        <Route path="/result" element={<QuizResult />} />
-        <Route path="/logs" element={<QuizLog />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/questions" element={<ManageQuestions />} />
-        <Route path="/admin/users" element={<ManageUsers />} />
+
+        {/* for regular user page */}
+        <Route
+          path="/user"
+          element={
+            <PrivateRoute element={<UserDashboard />} allowedRoles={["user"]} />
+          }
+        />
+        <Route
+          path="/quiz"
+          element={
+            <PrivateRoute element={<QuizPage />} allowedRoles={["user"]} />
+          }
+        />
+        <Route
+          path="/quiz/start"
+          element={
+            <PrivateRoute element={<QuizSession />} allowedRoles={["user"]} />
+          }
+        />
+        <Route
+          path="/result"
+          element={
+            <PrivateRoute element={<QuizResult />} allowedRoles={["user"]} />
+          }
+        />
+        <Route
+          path="/logs"
+          element={
+            <PrivateRoute element={<QuizLog />} allowedRoles={["user"]} />
+          }
+        />
+        {/* for admin page */}
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute
+              element={<AdminDashboard />}
+              allowedRoles={["admin"]}
+            />
+          }
+        />
+        <Route
+          path="/admin/questions"
+          element={
+            <PrivateRoute
+              element={<ManageQuestions />}
+              allowedRoles={["admin"]}
+            />
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <PrivateRoute element={<ManageUsers />} allowedRoles={["admin"]} />
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
