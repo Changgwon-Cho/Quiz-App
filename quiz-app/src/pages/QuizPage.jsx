@@ -1,22 +1,23 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+// import { categoryMap } from '../utils/categoryMap';
 
 export default function QuizPage() {
   const [amount, setAmount] = useState(10);
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState("");
   const navigate = useNavigate();
 
   const startQuiz = async () => {
     // 유효성 검사 추가
     if (!category) {
-      alert('Please select a category.');
+      alert("Please select a category.");
       return;
     }
 
     const parsedAmount = parseInt(amount);
     if (!parsedAmount || parsedAmount < 1 || parsedAmount > 50) {
-      alert('The number of questions must be between 1 and 50.');
+      alert("The number of questions must be between 1 and 50.");
       return;
     }
 
@@ -36,14 +37,17 @@ export default function QuizPage() {
           };
         });
 
-        localStorage.setItem('currentQuiz', JSON.stringify(questionsWithChoices));
-        navigate('/quiz/start');
+        localStorage.setItem(
+          "currentQuiz",
+          JSON.stringify(questionsWithChoices)
+        );
+        navigate("/quiz/start");
       } else {
-        alert('Failed to fetch quiz data.');
+        alert("Failed to fetch quiz data.");
       }
     } catch (error) {
       console.error(error);
-      alert('Error occurred: ' + error.message);
+      alert("Error occurred: " + error.message);
     }
   };
 
@@ -99,12 +103,21 @@ export default function QuizPage() {
           </select>
         </div>
 
-        <button
-          onClick={startQuiz}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-        >
-          Start Quiz
-        </button>
+        <div className="space-y-3">
+          <button
+            onClick={startQuiz}
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          >
+            Start Quiz
+          </button>
+
+          <button
+            onClick={() => navigate("/user")}
+            className="w-full bg-gray-300 text-gray-800 py-2 rounded hover:bg-gray-400 mt-2"
+          >
+            Back to Dashboard
+          </button>
+        </div>
       </div>
     </div>
   );
