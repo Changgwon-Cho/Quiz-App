@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; // useLocation 추가
+import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 
 export default function QuizLog() {
   const [history, setHistory] = useState([]);
   const navigate = useNavigate();
-  const location = useLocation(); // 현재 위치를 감지
+  const location = useLocation();
 
   useEffect(() => {
     const stored = localStorage.getItem('quizHistory');
     if (stored) {
       setHistory(JSON.parse(stored));
     }
-  }, [location]); // 페이지 방문(라우트 변경) 시마다 실행됨
+  }, [location]);
 
   return (
     <div>
@@ -36,16 +36,27 @@ export default function QuizLog() {
               <thead>
                 <tr className="bg-gray-200">
                   <th className="border px-4 py-2">Date</th>
+                  <th className="border px-4 py-2">Category</th>
                   <th className="border px-4 py-2">Total Questions</th>
                   <th className="border px-4 py-2">Correct Answers</th>
+                  <th className="border px-4 py-2">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {history.map((item, idx) => (
                   <tr key={idx}>
                     <td className="border px-4 py-2">{item.date}</td>
+                    <td className="border px-4 py-2">{item.category || 'N/A'}</td>
                     <td className="border px-4 py-2">{item.total}</td>
                     <td className="border px-4 py-2">{item.score}</td>
+                    <td className="border px-4 py-2 text-center">
+                      <button
+                        onClick={() => navigate(`/quizlog/${idx}`)}
+                        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                      >
+                        Detail
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
