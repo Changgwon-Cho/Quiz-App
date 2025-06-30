@@ -11,8 +11,9 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ManageQuestions from "./pages/ManageQuestions";
 import ManageUsers from "./pages/ManageUsers";
 import PrivateRoute from "./auth/PrivateRoute";
+import QuizDetail from "./pages/QuizDetail";
 
-function App() {
+export default function App() {
   return (
     <BrowserRouter>
       <Routes>
@@ -51,6 +52,12 @@ function App() {
             <PrivateRoute element={<QuizLog />} allowedRoles={["user"]} />
           }
         />
+        <Route
+          path="/quizlog/:index"
+          element={
+            <PrivateRoute element={<QuizDetail />} allowedRoles={["user"]} />
+          }
+        />
         {/* for admin page */}
         <Route
           path="/admin"
@@ -80,5 +87,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;
