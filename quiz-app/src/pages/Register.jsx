@@ -1,28 +1,28 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user");
   const navigate = useNavigate();
 
   const handleRegister = (e) => {
     e.preventDefault();
 
-    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const users = JSON.parse(localStorage.getItem("users")) || [];
     const exists = users.find((u) => u.username === username);
 
     if (exists) {
-      alert('The user already exists..');
+      alert("The user already exists!");
       return;
     }
 
     users.push({ username, password, role });
-    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem("users", JSON.stringify(users));
 
-    alert('Sign-up complete! Redirecting to the login page.');
-    navigate('/login');
+    alert("Sign-up complete! Redirecting to the login page.");
+    navigate("/login");
   };
 
   return (
@@ -71,7 +71,7 @@ export default function Register() {
 
         <div className="mt-4 text-center">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             className="text-sm text-blue-500 hover:underline"
           >
             Go to Home

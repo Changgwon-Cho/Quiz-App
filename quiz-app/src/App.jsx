@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import PrivateRoute from "./auth/PrivateRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -7,21 +8,21 @@ import QuizPage from "./pages/QuizPage";
 import QuizSession from "./pages/QuizSession";
 import QuizResult from "./pages/QuizResult";
 import QuizLog from "./pages/QuizLog";
+import QuizDetail from "./pages/QuizDetail";
 import AdminDashboard from "./pages/AdminDashboard";
 import ManageQuestions from "./pages/ManageQuestions";
 import ManageUsers from "./pages/ManageUsers";
-import PrivateRoute from "./auth/PrivateRoute";
-import QuizDetail from "./pages/QuizDetail";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* 공통 */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* for regular user page */}
+        {/* 일반 사용자 전용 */}
         <Route
           path="/user"
           element={
@@ -58,7 +59,8 @@ export default function App() {
             <PrivateRoute element={<QuizDetail />} allowedRoles={["user"]} />
           }
         />
-        {/* for admin page */}
+        
+        {/* 관리자 전용 */}
         <Route
           path="/admin"
           element={

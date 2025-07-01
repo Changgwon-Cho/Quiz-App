@@ -1,22 +1,23 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthManager } from '../auth/AuthManager';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthManager } from "../auth/AuthManager";
 
 export default function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
 
-    const user = AuthManager.login(username, password);
+    // 내부적으로 localStorage의 users에서 유저를 찾고, 로그인 성공 시 currentUser로 저장함
+    const user = AuthManager.login(username, password); 
 
     if (user) {
-      if (user.role === 'admin') {
-        navigate('/admin');
+      if (user.role === "admin") {
+        navigate("/admin");
       } else {
-        navigate('/user');
+        navigate("/user");
       }
     }
   };
@@ -56,7 +57,7 @@ export default function Login() {
 
         <div className="mt-4 text-center">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             className="text-sm text-blue-500 hover:underline"
           >
             Go to Home

@@ -1,33 +1,19 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // 함수형 컴포넌트에서 프로그래밍적으로 페이지 이동을 가능케 함
 
-  const user = JSON.parse(localStorage.getItem('currentUser'));
+  const user = JSON.parse(localStorage.getItem("currentUser"));
   const isLoggedIn = !!user;
 
-  const handleLogoClick = () => {
-    if (isLoggedIn) {
-      if (user.role === 'user') {
-        navigate('/user');
-      } else if (user.role === 'admin') {
-        navigate('/admin');
-      }
-    } else {
-      navigate('/');
-    }
-  };
-
   const handleLogout = () => {
-    localStorage.removeItem('currentUser');
-    navigate('/');
+    localStorage.removeItem("currentUser");
+    navigate("/");
   };
 
   return (
     <nav className="bg-white shadow p-4 flex justify-between items-center">
-      <div className="text-xl font-bold cursor-pointer" onClick={handleLogoClick}>
-        Quiz App
-      </div>
+      <div className="text-xl font-bold">Quiz App</div>
       {isLoggedIn && (
         <div className="flex items-center space-x-4">
           <span className="text-gray-600">Current User : {user.username}</span>
