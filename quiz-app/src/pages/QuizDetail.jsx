@@ -1,20 +1,25 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 function decodeHTMLEntities(text) {
-  const textarea = document.createElement('textarea');
+  const textarea = document.createElement("textarea");
   textarea.innerHTML = text;
   return textarea.value;
 }
 
 export default function QuizDetail() {
-  const { index } = useParams(); // 주의: useParams로 받아오는 값은 string
+  const { index } = useParams(); // index는 문자열
   const navigate = useNavigate();
   const [quiz, setQuiz] = useState(null);
 
   useEffect(() => {
-    const history = JSON.parse(localStorage.getItem('quizHistory')) || [];
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const userKey = currentUser
+      ? `quizHistory_${currentUser.username}`
+      : "quizHistory_guest";
+
+    const history = JSON.parse(localStorage.getItem(userKey)) || [];
     const selected = history[Number(index)];
     if (selected) {
       setQuiz(selected);
@@ -37,7 +42,7 @@ export default function QuizDetail() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Quiz Details</h2>
             <button
-              onClick={() => navigate('/logs')}
+              onClick={() => navigate("/logs")}
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
               Back to Records List
@@ -45,7 +50,9 @@ export default function QuizDetail() {
           </div>
 
           <p className="mb-4 font-semibold">Date Taken: {quiz.date}</p>
-          <p className="mb-4 font-semibold">Category: {quiz.category || 'N/A'}</p>
+          <p className="mb-4 font-semibold">
+            Category: {quiz.category || "N/A"}
+          </p>
           <p className="mb-6 font-semibold">
             Score: {quiz.score} / {quiz.total}
           </p>
@@ -64,10 +71,10 @@ export default function QuizDetail() {
                         key={i}
                         className={`px-2 py-1 rounded ${
                           choice === q.correct_answer
-                            ? 'bg-green-100'
+                            ? "bg-green-100"
                             : choice === q.user_answer
-                            ? 'bg-red-100'
-                            : ''
+                            ? "bg-red-100"
+                            : ""
                         }`}
                       >
                         {decodeHTMLEntities(choice)}
@@ -75,13 +82,15 @@ export default function QuizDetail() {
                     ))}
                   </ul>
                   <p className="text-sm text-gray-600">
-                    {isCorrect ? '✅ Correct Answer.' : '❌ Incorrect Answer.'}
+                    {isCorrect ? "✅ Correct Answer." : "❌ Incorrect Answer."}
                   </p>
                 </div>
               );
             })
           ) : (
-            <p className="text-center text-red-500">Failed to load question data..</p>
+            <p className="text-center text-red-500">
+              Failed to load question data..
+            </p>
           )}
         </div>
       </div>

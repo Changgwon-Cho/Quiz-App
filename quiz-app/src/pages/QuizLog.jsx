@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 export default function QuizLog() {
   const [history, setHistory] = useState([]);
@@ -8,9 +8,14 @@ export default function QuizLog() {
   const location = useLocation();
 
   useEffect(() => {
-    const stored = localStorage.getItem('quizHistory');
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const userKey = currentUser ? `quizHistory_${currentUser.username}` : "quizHistory_guest";
+
+    const stored = localStorage.getItem(userKey);
     if (stored) {
       setHistory(JSON.parse(stored));
+    } else {
+      setHistory([]);
     }
   }, [location]);
 
@@ -22,7 +27,7 @@ export default function QuizLog() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Quiz History</h2>
             <button
-              onClick={() => navigate('/user')}
+              onClick={() => navigate("/user")}
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
               Back to Dashboard
@@ -46,7 +51,9 @@ export default function QuizLog() {
                 {history.map((item, idx) => (
                   <tr key={idx}>
                     <td className="border px-4 py-2">{item.date}</td>
-                    <td className="border px-4 py-2">{item.category || 'N/A'}</td>
+                    <td className="border px-4 py-2">
+                      {item.category || "N/A"}
+                    </td>
                     <td className="border px-4 py-2">{item.total}</td>
                     <td className="border px-4 py-2">{item.score}</td>
                     <td className="border px-4 py-2 text-center">
