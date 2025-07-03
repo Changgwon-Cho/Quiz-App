@@ -4,6 +4,34 @@ import Navbar from '../components/Navbar';
 export default function ManageQuestions() {
   const [questions, setQuestions] = useState([]);
 
+  const [editingQuestion, setEditingQuestion] = useState(null);
+  const [editForm, setEditForm] = useState({
+    question: '',
+    choices: ['', '', '', ''],
+    correct: '',
+  });
+
+  const handleEdit = (q) => {
+  setEditingQuestion(q.id);
+  setEditForm({
+    question: q.question,
+    choices: [...q.choices],
+    correct: q.correct,
+  });
+};
+
+const handleDelete = (id) => {
+  const confirmDelete = confirm('Are you sure you want to delete this question?');
+  // Confirmación antes de eliminar
+  // Si el usuario no confirma, no se realiza la eliminación
+  // Si el usuario confirma, se procede a eliminar la pregunta
+  if (!confirmDelete) return;
+
+  const updated = questions.filter((q) => q.id !== id);
+  localStorage.setItem('questions', JSON.stringify(updated));
+  setQuestions(updated);
+};
+  // Cargar las preguntas desde localStorage al iniciar
   useEffect(() => {
     const stored = localStorage.getItem('questions');
     if (stored) {
@@ -34,7 +62,7 @@ export default function ManageQuestions() {
               const correct = formData.get('correct');
 
               if (!question || options.some((opt) => !opt) || !correct) {
-                alert('Por favor completa todos los campos.');
+                alert('Please complete all fields.');
                 return;
               }
 
@@ -81,6 +109,95 @@ export default function ManageQuestions() {
               Save the question
             </button>
           </form>
+          {editingQuestion && (
+          <div className="bg-yellow-100 p-6 rounded shadow mb-8 max-w-2xl">
+            <h3 className="text-lg font-semibold mb-4">Edit question</h3>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const updated = questions.map((q) =>
+                  q.id === editingQuestion
+                    ? {
+                        ...q,
+                        question: editForm.question,
+                        choices: editForm.choices,
+                        correct: editForm.correct,
+                      }
+                    : q
+                );
+                localStorage.setItem('questions', JSON.stringify(updated));
+                setQuestions(updated);
+                setEditingQuestion(null);
+                setEditForm({
+                  question: '',
+                  choices: ['', '', '', ''],
+                  correct: '',
+                });
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="block mb-1 font-medium">Question</label>
+                <input
+                  className="w-full border px-3 py-2 rounded"
+                  value={editForm.question}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, question: e.target.value })
+                  }
+                />
+              </div>
+
+              {editForm.choices.map((choice, i) => (
+                <div key={i}>
+                  <label className="block mb-1 font-medium">Option {i + 1}</label>
+                  <input
+                    className="w-full border px-3 py-2 rounded"
+                    value={choice}
+                    onChange={(e) => {
+                      const newChoices = [...editForm.choices];
+                      newChoices[i] = e.target.value;
+                      setEditForm({ ...editForm, choices: newChoices });
+                    }}
+                  />
+                </div>
+              ))}
+
+              <div>
+                <label className="block mb-1 font-medium">Correct option</label>
+                <select
+                  className="w-full border px-3 py-2 rounded"
+                  value={editForm.correct}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, correct: e.target.value })
+                  }
+                >
+                  <option value="">Choose the correct option</option>
+                  {editForm.choices.map((choice, i) => (
+                    <option key={i} value={choice}>
+                      {choice}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                >
+                  Save changes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditingQuestion(null)}
+                  className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
         </div>
 
 
@@ -110,8 +227,8 @@ export default function ManageQuestions() {
                   <td className="border px-4 py-2 text-center space-x-2">
                     <button
                       onClick={() => handleEdit(q)}
-                      className="bg-yellow-400 text-white px-2 py-1 rounded hover:bg-yellow-500"
-                    >
+                      
+                      className="bg-yellow-400 text-white px-2 py-1 rounded hover:bg-yellow-500">
                       ✏️ Edit
                     </button>
                     <button
