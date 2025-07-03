@@ -2,9 +2,8 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 
-export default function ManageQuestions() {
+export default function ManageQuestions() { // <-- Abre la función ManageQuestions
   const [questions, setQuestions] = useState([]);
-
   const [editingQuestion, setEditingQuestion] = useState(null);
   const [editForm, setEditForm] = useState({
     question: '',
@@ -12,26 +11,25 @@ export default function ManageQuestions() {
     correct: '',
   });
 
+  // 👇 Todas tus funciones y hooks DEBEN IR DENTRO de esta función ManageQuestions
   const handleEdit = (q) => {
-  setEditingQuestion(q.id);
-  setEditForm({
-    question: q.question,
-    choices: [...q.choices],
-    correct: q.correct,
-  });
-};
+    setEditingQuestion(q.id);
+    setEditForm({
+      question: q.question,
+      choices: [...q.choices],
+      correct: q.correct,
+    });
+  };
 
-const handleDelete = (id) => {
-  const confirmDelete = confirm('Are you sure you want to delete this question?');
-  // Confirmación antes de eliminar
-  // Si el usuario no confirma, no se realiza la eliminación
-  // Si el usuario confirma, se procede a eliminar la pregunta
-  if (!confirmDelete) return;
+  const handleDelete = (id) => {
+    const confirmDelete = confirm('Are you sure you want to delete this question?');
+    if (!confirmDelete) return;
 
-  const updated = questions.filter((q) => q.id !== id);
-  localStorage.setItem('questions', JSON.stringify(updated));
-  setQuestions(updated);
-};
+    const updated = questions.filter((q) => q.id !== id);
+    localStorage.setItem('questions', JSON.stringify(updated));
+    setQuestions(updated);
+  };
+
   // Cargar las preguntas desde localStorage al iniciar
   useEffect(() => {
     const stored = localStorage.getItem('questions');
@@ -40,6 +38,7 @@ const handleDelete = (id) => {
     }
   }, []);
 
+  // 👇 El 'return' con el JSX que renderiza el componente
   return (
     <div>
       <Navbar />
@@ -228,7 +227,7 @@ const handleDelete = (id) => {
                   <td className="border px-4 py-2 text-center space-x-2">
                     <button
                       onClick={() => handleEdit(q)}
-                      
+
                       className="bg-yellow-400 text-white px-2 py-1 rounded hover:bg-yellow-500">
                       ✏️ Edit
                     </button>
@@ -248,8 +247,4 @@ const handleDelete = (id) => {
       </div>
     </div>
   );
-
-export default function Login() {
-  return <h2>ManageQuestions Page</h2>;
-
-}
+} 
