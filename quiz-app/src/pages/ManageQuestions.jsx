@@ -112,13 +112,13 @@ export default function ManageQuestions() {
                       onClick={() => handleEdit(q)}
                       className="bg-yellow-400 text-white px-2 py-1 rounded hover:bg-yellow-500"
                     >
-                      ✏️ Editar
+                      ✏️ Edit
                     </button>
                     <button
                       onClick={() => handleDelete(q.id)}
                       className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
                     >
-                      🗑 Eliminar
+                      🗑 Deleted
                     </button>
                   </td>
                 </tr>
