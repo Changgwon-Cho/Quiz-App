@@ -50,7 +50,7 @@ export default function QuizLog() {
                 </tr>
               </thead>
               <tbody>
-                {history.map((item, idx) => ( // idx는 localStorage 배열 내 퀴즈 순서 인덱스
+                {history.map((item, idx) => ( // localStorage 배열 내 퀴즈 순서 인덱스
                   <tr key={idx}>
                     <td className="border px-4 py-2">{item.date}</td>
                     <td className="border px-4 py-2">{item.category || "N/A"}</td>

@@ -8,11 +8,12 @@ export default function QuizResult() {
   useEffect(() => { // 컴포넌트가 처음 렌더링될 때(마운트될 때) 실행
     const stored = localStorage.getItem("lastResult"); // lastResult는 퀴즈 제출 후 QuizSession.jsx에서 저장한 공통 결과
     if (stored) {
-      setResult(JSON.parse(stored)); // result 상태에 저장
+      setResult(JSON.parse(stored));
     } else {
       navigate("/");
     }
-  }, [navigate]); // navigate 같은 외부 함수를 사용함으로 명시(경고 방지 및 추적)
+  }, [navigate]);
+  // 외부 함수를 사용함으로 명시(경고 방지 및 추적)
 
   if (!result) return null;
 
