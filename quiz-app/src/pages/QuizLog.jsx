@@ -3,10 +3,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 export default function QuizLog() {
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState([]); // 사용자의 퀴즈 기록 배열
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = useLocation(); // 현재 URL 정보를 가져옴, location이 바뀔 때마다 useEffect 재실행(뒤로가기 등)
 
+  // 퀴즈 이력 불러오기
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     const userKey = currentUser ? `quizHistory_${currentUser.username}` : "quizHistory_guest";
@@ -17,7 +18,8 @@ export default function QuizLog() {
     } else {
       setHistory([]);
     }
-  }, [location]);
+  }, [location]); 
+  // 페이지 이동(경로 변경) 시 useEffect를 재실행하여 최신 데이터를 불러오기 위함
 
   return (
     <div>
@@ -48,12 +50,10 @@ export default function QuizLog() {
                 </tr>
               </thead>
               <tbody>
-                {history.map((item, idx) => (
+                {history.map((item, idx) => ( // idx는 localStorage 배열 내 퀴즈 순서 인덱스
                   <tr key={idx}>
                     <td className="border px-4 py-2">{item.date}</td>
-                    <td className="border px-4 py-2">
-                      {item.category || "N/A"}
-                    </td>
+                    <td className="border px-4 py-2">{item.category || "N/A"}</td>
                     <td className="border px-4 py-2">{item.total}</td>
                     <td className="border px-4 py-2">{item.score}</td>
                     <td className="border px-4 py-2 text-center">

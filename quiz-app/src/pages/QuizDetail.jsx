@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+// 현재 URL에 포함된 동적 파라미터를 가져오는데 사용됨
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
+// Open Trivia API는 HTML 특수문자 형식으로 질문을 반환하므로 textarea 요소를 사용해 실제 텍스트로 디코딩
 function decodeHTMLEntities(text) {
   const textarea = document.createElement("textarea");
   textarea.innerHTML = text;
@@ -9,27 +11,29 @@ function decodeHTMLEntities(text) {
 }
 
 export default function QuizDetail() {
-  const { index } = useParams(); // index는 문자열
+  const { index } = useParams(); // index 값을 문자열로 받아옴
   const navigate = useNavigate();
   const [quiz, setQuiz] = useState(null);
 
   useEffect(() => {
+    // 사용자별 key로 퀴즈 기록 로딩
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     const userKey = currentUser
       ? `quizHistory_${currentUser.username}`
       : "quizHistory_guest";
 
     const history = JSON.parse(localStorage.getItem(userKey)) || [];
-    const selected = history[Number(index)];
+    const selected = history[Number(index)]; // index는 문자열이므로 숫자로 변환 후 해당 인덱스의 퀴즈 데이터 저장
     if (selected) {
       setQuiz(selected);
     }
-  }, [index]);
+  }, [index]); 
+  // index가 변경될 때마다 useEffect가 다시 실행되어 새로운 퀴즈를 다시 불러와 컴포넌트를 정확히 업데이트
 
   if (!quiz) {
     return (
       <div className="text-center mt-10 text-gray-500">
-        Loading quiz details...
+        Loading quiz details..
       </div>
     );
   }
@@ -58,7 +62,8 @@ export default function QuizDetail() {
           </p>
 
           {quiz.questions && Array.isArray(quiz.questions) ? (
-            quiz.questions.map((q, idx) => {
+            // map을 사용해 문제들을 하나씩 출력
+            quiz.questions.map((q, idx) => { // 현재 퀴즈 문제 객체 / 해당 문제의 순서 인덱스
               const isCorrect = q.user_answer === q.correct_answer;
               return (
                 <div key={idx} className="mb-6 border-b pb-4">
@@ -66,7 +71,7 @@ export default function QuizDetail() {
                     Q{idx + 1}. {decodeHTMLEntities(q.question)}
                   </p>
                   <ul className="mb-2 space-y-1">
-                    {q.shuffledChoices.map((choice, i) => (
+                    {q.shuffledChoices.map((choice, i) => ( // 선택지 목록 하나씩 출력
                       <li
                         key={i}
                         className={`px-2 py-1 rounded ${
