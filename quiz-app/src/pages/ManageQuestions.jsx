@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 
@@ -247,4 +248,8 @@ const handleDelete = (id) => {
       </div>
     </div>
   );
+
+export default function Login() {
+  return <h2>ManageQuestions Page</h2>;
+
 }

@@ -1,49 +1,73 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+// Fisher–Yates Shuffle 알고리즘을 사용해 공정하게 배열을 랜덤하게 섞음
+function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 export default function QuizPage() {
   const [amount, setAmount] = useState(10);
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState("");
   const navigate = useNavigate();
 
   const startQuiz = async () => {
-    // 유효성 검사 추가
     if (!category) {
-      alert('Please select a category.');
+      alert("Please select a category.");
       return;
     }
 
     const parsedAmount = parseInt(amount);
     if (!parsedAmount || parsedAmount < 1 || parsedAmount > 50) {
-      alert('The number of questions must be between 1 and 50.');
+      alert("The number of questions must be between 1 and 50.");
       return;
     }
 
     try {
-      const url = `https://opentdb.com/api.php?amount=${parsedAmount}&category=${category}`;
-      const response = await axios.get(url);
+      const response = await axios.get(
+        `https://opentdb.com/api.php?amount=${parsedAmount}&category=${category}`
+      );
 
+      // Open Trivia API는 response_code를 통해 성공 여부를 알려주는데, 0이면 문제를 성공적으로 받아온 상태임
+      // 성공 시 API 응답의 results 속성에 들어있는 실제 퀴즈 문제 배열을 rawQuestions 변수에 저장
       if (response.data.response_code === 0) {
         const rawQuestions = response.data.results;
 
+        // 사용자가 선택한 옵션의 텍스트인 카테고리 이름을 가져옴
+        const categoryText =
+          document.querySelector("select").selectedOptions[0].text;
+
+        // 전체 퀴즈 데이터를 사용자 퀴즈 풀이에 적합하게 변환하는 과정 / 각 퀴즈 질문(q)를 받아서
         const questionsWithChoices = rawQuestions.map((q) => {
+          // 정답 문자열과 오답 목록 배열을 하나의 배열로 합쳐서 저장
           const allChoices = [...q.incorrect_answers, q.correct_answer];
-          const shuffledChoices = allChoices.sort(() => Math.random() - 0.5);
+          // 위 배열을 랜덤으로 섞음
+          const shuffledChoices = shuffle(allChoices);
+          // 기존 문제 객체(q)에 섞은 문제 변수와 카테고리 이름을 추가한 새 객체 반환
           return {
             ...q,
             shuffledChoices,
+            categoryName: categoryText,
           };
         });
 
-        localStorage.setItem('currentQuiz', JSON.stringify(questionsWithChoices));
-        navigate('/quiz/start');
+        localStorage.setItem(
+          "currentQuiz",
+          JSON.stringify(questionsWithChoices) // 저장
+        );
+        navigate("/quiz/start");
       } else {
-        alert('Failed to fetch quiz data.');
+        alert("Failed to fetch quiz data.");
       }
     } catch (error) {
       console.error(error);
-      alert('Error occurred: ' + error.message);
+      alert("Error occurred: " + error.message);
     }
   };
 
@@ -99,12 +123,21 @@ export default function QuizPage() {
           </select>
         </div>
 
-        <button
-          onClick={startQuiz}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-        >
-          Start Quiz
-        </button>
+        <div className="space-y-3">
+          <button
+            onClick={startQuiz}
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          >
+            Start Quiz
+          </button>
+
+          <button
+            onClick={() => navigate("/user")}
+            className="w-full bg-gray-300 text-gray-800 py-2 rounded hover:bg-gray-400 mt-2"
+          >
+            Back to Dashboard
+          </button>
+        </div>
       </div>
     </div>
   );

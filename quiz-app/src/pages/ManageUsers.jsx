@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 
@@ -44,4 +45,9 @@ export default function ManageUsers() {
   );
 }
 
+
+
+export default function Login() {
+  return <h2>ManageUsers Page</h2>;
+}
 

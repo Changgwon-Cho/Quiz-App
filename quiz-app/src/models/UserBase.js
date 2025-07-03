@@ -4,12 +4,4 @@ export class UserBase {
     this.password = password;
     this.role = role;
   }
-
-  login() {
-    return true;
-  }
-
-  logout() {
-    console.log(`${this.username} Logged out successful!`);
-  }
-} 
+}

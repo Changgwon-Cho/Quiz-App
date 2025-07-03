@@ -1,18 +1,25 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; // useLocation 추가
-import Navbar from '../components/Navbar';
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 export default function QuizLog() {
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState([]); // 사용자의 퀴즈 기록 배열
   const navigate = useNavigate();
-  const location = useLocation(); // 현재 위치를 감지
+  const location = useLocation(); // 현재 URL 정보를 가져옴, location이 바뀔 때마다 useEffect 재실행(뒤로가기 등)
 
+  // 퀴즈 이력 불러오기
   useEffect(() => {
-    const stored = localStorage.getItem('quizHistory');
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const userKey = currentUser ? `quizHistory_${currentUser.username}` : "quizHistory_guest";
+
+    const stored = localStorage.getItem(userKey);
     if (stored) {
       setHistory(JSON.parse(stored));
+    } else {
+      setHistory([]);
     }
-  }, [location]); // 페이지 방문(라우트 변경) 시마다 실행됨
+  }, [location]); 
+  // 페이지 이동(경로 변경) 시 useEffect를 재실행하여 최신 데이터를 불러오기 위함
 
   return (
     <div>
@@ -22,7 +29,7 @@ export default function QuizLog() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Quiz History</h2>
             <button
-              onClick={() => navigate('/user')}
+              onClick={() => navigate("/user")}
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
               Back to Dashboard
@@ -36,16 +43,27 @@ export default function QuizLog() {
               <thead>
                 <tr className="bg-gray-200">
                   <th className="border px-4 py-2">Date</th>
+                  <th className="border px-4 py-2">Category</th>
                   <th className="border px-4 py-2">Total Questions</th>
                   <th className="border px-4 py-2">Correct Answers</th>
+                  <th className="border px-4 py-2">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {history.map((item, idx) => (
+                {history.map((item, idx) => ( // localStorage 배열 내 퀴즈 순서 인덱스
                   <tr key={idx}>
                     <td className="border px-4 py-2">{item.date}</td>
+                    <td className="border px-4 py-2">{item.category || "N/A"}</td>
                     <td className="border px-4 py-2">{item.total}</td>
                     <td className="border px-4 py-2">{item.score}</td>
+                    <td className="border px-4 py-2 text-center">
+                      <button
+                        onClick={() => navigate(`/quizlog/${idx}`)}
+                        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                      >
+                        Detail
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
